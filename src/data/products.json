@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "ae24b9a6-bc05-4f0c-90ae-5023e41207fc",
+    "title": "Teclado ",
+    "description": "desc",
+    "code": "1773507241048",
+    "price": 3000,
+    "status": true,
+    "stock": 10,
+    "category": "general",
+    "thumbnails": []
+  },
+  {
+    "id": "65c28821-4ecc-4930-89a5-6e700e3b57d1",
+    "title": "Monitor ",
+    "description": "desc",
+    "code": "1773507250231",
+    "price": 5000,
+    "status": true,
+    "stock": 10,
+    "category": "general",
+    "thumbnails": []
+  },
+  {
+    "id": "d78c79f1-539d-4537-bb59-1acabe185936",
+    "title": "Mouse ",
+    "description": "desc",
+    "code": "1773507285285",
+    "price": 1500,
+    "status": true,
+    "stock": 10,
+    "category": "general",
+    "thumbnails": []
+  }
+]
