@@ -1,65 +1,95 @@
 import { Router } from 'express'
-import CartManager from '../managers/CartManager.js'
+import CartModel from '../models/Cart.model.js'
 
 const router = Router()
-const manager = new CartManager('./src/data/carts.json')
 
+// Crear carrito
 router.post('/', async (req, res) => {
-  const cart = await manager.createCart()
+  const cart = await CartModel.create({ products: [] })
   res.status(201).json(cart)
 })
 
+// Obtener carrito con populate 🔥
 router.get('/:cid', async (req, res) => {
-  const cart = await manager.getCartById(req.params.cid)
+  const cart = await CartModel.findById(req.params.cid)
+    .populate('products.product')
+
   if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' })
 
   res.json(cart)
 })
 
+// Agregar producto al carrito
 router.post('/:cid/product/:pid', async (req, res) => {
-  const cart = await manager.addProductToCart(req.params.cid, req.params.pid)
+  const { cid, pid } = req.params
+
+  const cart = await CartModel.findById(cid)
   if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' })
 
+  const existing = cart.products.find(
+    p => p.product.toString() === pid
+  )
+
+  if (existing) {
+    existing.quantity++
+  } else {
+    cart.products.push({ product: pid, quantity: 1 })
+  }
+
+  await cart.save()
   res.json(cart)
 })
 
-
+// Eliminar producto del carrito
 router.delete('/:cid/products/:pid', async (req, res) => {
-  const cart = await manager.removeProductFromCart(req.params.cid, req.params.pid)
-  if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' })
+  const cart = await CartModel.findById(req.params.cid)
 
+  cart.products = cart.products.filter(
+    p => p.product.toString() !== req.params.pid
+  )
+
+  await cart.save()
   res.json(cart)
 })
 
-
+// Reemplazar carrito completo
 router.put('/:cid', async (req, res) => {
   const { products } = req.body
 
-  const cart = await manager.updateCart(req.params.cid, products)
-  if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' })
+  const cart = await CartModel.findByIdAndUpdate(
+    req.params.cid,
+    { products },
+    { new: true }
+  )
 
   res.json(cart)
 })
 
-
+// Actualizar cantidad
 router.put('/:cid/products/:pid', async (req, res) => {
   const { quantity } = req.body
 
-  const cart = await manager.updateProductQuantity(
-    req.params.cid,
-    req.params.pid,
-    quantity
+  const cart = await CartModel.findById(req.params.cid)
+
+  const product = cart.products.find(
+    p => p.product.toString() === req.params.pid
   )
 
-  if (!cart) return res.status(404).json({ error: 'Producto o carrito no encontrado' })
+  if (product) {
+    product.quantity = quantity
+  }
 
+  await cart.save()
   res.json(cart)
 })
 
-
+// Vaciar carrito
 router.delete('/:cid', async (req, res) => {
-  const cart = await manager.clearCart(req.params.cid)
-  if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' })
+  const cart = await CartModel.findByIdAndUpdate(
+    req.params.cid,
+    { products: [] },
+    { new: true }
+  )
 
   res.json({ message: 'Carrito vaciado', cart })
 })

@@ -1,8 +1,8 @@
 import app from './app.js'
 import { Server } from 'socket.io'
-import ProductManager from './managers/ProductManager.js'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import ProductModel from './models/Product.model.js'
 
 dotenv.config({ path: './.env' })
 
@@ -25,19 +25,16 @@ const io = new Server(httpServer)
 
 app.set('io', io)
 
-const manager = new ProductManager('./src/data/products.json')
-
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
 
     console.log("Cliente conectado")
 
-    manager.getProducts().then(products => {
-        socket.emit("updateProducts", products)
-    })
+    const products = await ProductModel.find()
+    socket.emit("updateProducts", products)
 
-    socket.on("addProduct", (product) => {
+    socket.on("addProduct", async (product) => {
 
-        manager.addProduct({
+        await ProductModel.create({
             title: product.title,
             description: "desc",
             code: Date.now().toString(),
@@ -47,15 +44,14 @@ io.on("connection", (socket) => {
             category: "general",
             thumbnails: []
         })
-        .then(() => manager.getProducts())
-        .then(products => {
-            io.emit("updateProducts", products)
-        })
+
+        const updatedProducts = await ProductModel.find()
+        io.emit("updateProducts", updatedProducts)
     })
 
     socket.on("deleteProduct", async (id) => {
-        await manager.deleteProduct(id)
-        const products = await manager.getProducts()
+        await ProductModel.findByIdAndDelete(id)
+        const products = await ProductModel.find()
         io.emit("updateProducts", products)
     })
 
