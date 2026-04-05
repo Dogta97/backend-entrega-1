@@ -10,7 +10,11 @@ console.log("URI:", process.env.MONGO_URI)
 
 const PORT = 8080
 
-mongoose.connect(process.env.MONGO_URI)
+// 🔥 CONEXIÓN A MONGO (FIX DNS / IPV4)
+mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000,
+    family: 4
+})
     .then(() => console.log("🟢 Conectado a MongoDB"))
     .catch(err => console.log("🔴 Error Mongo:", err))
 
