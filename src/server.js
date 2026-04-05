@@ -10,7 +10,6 @@ console.log("URI:", process.env.MONGO_URI)
 
 const PORT = 8080
 
-// 🔥 CONEXIÓN A MONGO (FIX DNS / IPV4)
 mongoose.connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 5000,
     family: 4
