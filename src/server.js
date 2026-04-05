@@ -1,8 +1,18 @@
 import app from './app.js'
 import { Server } from 'socket.io'
 import ProductManager from './managers/ProductManager.js'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+
+dotenv.config({ path: './.env' })
+
+console.log("URI:", process.env.MONGO_URI)
 
 const PORT = 8080
+
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("🟢 Conectado a MongoDB"))
+    .catch(err => console.log("🔴 Error Mongo:", err))
 
 const httpServer = app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`)
