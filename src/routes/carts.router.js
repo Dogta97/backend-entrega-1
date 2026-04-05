@@ -3,13 +3,13 @@ import CartModel from '../models/Cart.model.js'
 
 const router = Router()
 
-// Crear carrito
+
 router.post('/', async (req, res) => {
   const cart = await CartModel.create({ products: [] })
   res.status(201).json(cart)
 })
 
-// Obtener carrito con populate 🔥
+
 router.get('/:cid', async (req, res) => {
   const cart = await CartModel.findById(req.params.cid)
     .populate('products.product')
@@ -19,8 +19,7 @@ router.get('/:cid', async (req, res) => {
   res.json(cart)
 })
 
-// Agregar producto al carrito
-router.post('/:cid/product/:pid', async (req, res) => {
+router.post('/:cid/products/:pid', async (req, res) => {
   const { cid, pid } = req.params
 
   const cart = await CartModel.findById(cid)
@@ -40,7 +39,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
   res.json(cart)
 })
 
-// Eliminar producto del carrito
+
 router.delete('/:cid/products/:pid', async (req, res) => {
   const cart = await CartModel.findById(req.params.cid)
 
@@ -52,7 +51,6 @@ router.delete('/:cid/products/:pid', async (req, res) => {
   res.json(cart)
 })
 
-// Reemplazar carrito completo
 router.put('/:cid', async (req, res) => {
   const { products } = req.body
 
@@ -65,7 +63,6 @@ router.put('/:cid', async (req, res) => {
   res.json(cart)
 })
 
-// Actualizar cantidad
 router.put('/:cid/products/:pid', async (req, res) => {
   const { quantity } = req.body
 
@@ -83,7 +80,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
   res.json(cart)
 })
 
-// Vaciar carrito
+
 router.delete('/:cid', async (req, res) => {
   const cart = await CartModel.findByIdAndUpdate(
     req.params.cid,

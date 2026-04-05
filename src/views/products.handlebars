@@ -4,13 +4,40 @@
   <div>
     <h3>{{this.title}}</h3>
     <p>Precio: {{this.price}}</p>
+
+    <a href="/products/{{this._id}}">Ver detalle</a>
+
+    <br><br>
+
+    <button onclick="addToCart('{{this._id}}')">
+      Agregar al carrito
+    </button>
+
+    <hr>
   </div>
 {{/each}}
 
+<br>
+
 {{#if hasPrevPage}}
-  <a href="/products?page={{prevPage}}">Anterior</a>
+  <a href="/products?page={{prevPage}}">⬅ Anterior</a>
 {{/if}}
 
 {{#if hasNextPage}}
-  <a href="/products?page={{nextPage}}">Siguiente</a>
+  <a href="/products?page={{nextPage}}">Siguiente ➡</a>
 {{/if}}
+
+<script>
+  const CART_ID = "69d2caadbfa89405aca2676c"
+
+  function addToCart(productId) {
+    fetch(`/api/carts/${CART_ID}/products/${productId}`, {
+      method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert('Producto agregado al carrito')
+    })
+    .catch(err => console.log(err))
+  }
+</script>

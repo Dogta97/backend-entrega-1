@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema({
   thumbnails: [String]
 });
 
-// 🔥 plugin de paginación
+
 productSchema.plugin(mongoosePaginate);
 
 const ProductModel = mongoose.model(productCollection, productSchema);

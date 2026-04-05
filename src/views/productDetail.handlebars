@@ -1,23 +1,31 @@
 <h1>{{product.title}}</h1>
 
-<p>{{product.description}}</p>
-<p>Precio: ${{product.price}}</p>
-<p>Categoría: {{product.category}}</p>
+<p><strong>Precio:</strong> {{product.price}}</p>
+<p><strong>Categoría:</strong> {{product.category}}</p>
+<p><strong>Stock:</strong> {{product.stock}}</p>
+<p><strong>Descripción:</strong> {{product.description}}</p>
 
-<button onclick="addToCart('{{product.id}}')">
-    Agregar al carrito
+<br>
+
+<button onclick="addToCart('{{product._id}}')">
+  Agregar al carrito
 </button>
 
-<a href="/products">Volver</a>
+<br><br>
+
+<a href="/products">⬅ Volver a productos</a>
 
 <script>
-    const CART_ID = "{{cartId}}"
+  const CART_ID = "69d2caadbfa89405aca2676c"
 
-    async function addToCart(pid) {
-        await fetch(`/api/carts/${CART_ID}/product/${pid}`, {
-            method: "POST"
-        })
-
-        alert("Producto agregado")
-    }
+  function addToCart(productId) {
+    fetch(`/api/carts/${CART_ID}/products/${productId}`, {
+      method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert('Producto agregado al carrito')
+    })
+    .catch(err => console.log(err))
+  }
 </script>

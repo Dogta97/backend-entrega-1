@@ -1,12 +1,20 @@
-<h1>Carrito</h1>
+<h1>🛒 Carrito</h1>
 
-{{#each products}}
+{{#if cart.products.length}}
+
+  {{#each cart.products}}
     <div>
-        <strong>{{this.title}}</strong>
-        <p>Precio: ${{this.price}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
+      <strong>{{this.product.title}}</strong>
+      <p>Precio: ${{this.product.price}}</p>
+      <p>Cantidad: {{this.quantity}}</p>
     </div>
     <hr>
-{{/each}}
+  {{/each}}
+
+{{else}}
+  <p>El carrito está vacío</p>
+{{/if}}
+
+<br>
 
 <a href="/products">Seguir comprando</a>
