@@ -1,9 +1,57 @@
 <h1>Lista de productos</h1>
 
+<form method="GET" action="/products">
+    <input type="text" name="category" placeholder="Categoría">
+
+    <select name="stock">
+        <option value="">Stock</option>
+        <option value="true">Con stock</option>
+        <option value="false">Sin stock</option>
+    </select>
+
+    <select name="sort">
+        <option value="">Ordenar</option>
+        <option value="asc">Precio ↑</option>
+        <option value="desc">Precio ↓</option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+</form>
+
 <ul>
 {{#each products}}
     <li>
-        {{this.title}} - ${{this.price}}
+        <strong>{{this.title}}</strong> - ${{this.price}}
+
+        <a href="/products/{{this.id}}">Ver detalle</a>
+
+        <button onclick="addToCart('{{this.id}}')">
+            Agregar
+        </button>
     </li>
 {{/each}}
 </ul>
+
+<div>
+    {{#if hasPrevPage}}
+        <a href="/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
+
+    <span>Página {{page}}</span>
+
+    {{#if hasNextPage}}
+        <a href="/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
+</div>
+
+<script>
+    const CART_ID = "{{cartId}}"
+
+    async function addToCart(pid) {
+        await fetch(`/api/carts/${CART_ID}/product/${pid}`, {
+            method: "POST"
+        })
+
+        alert("Producto agregado")
+    }
+</script>
